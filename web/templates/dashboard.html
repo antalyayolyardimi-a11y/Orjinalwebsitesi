@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Trading Bot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-robot me-2"></i>
+                Advanced Trading Bot
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Dashboard</a>
+                <a class="nav-link" href="/signals">Sinyaller</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Status Bar -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-circle me-2" id="status-icon"></i>
+                                    Bot Status: <span id="bot-status">{{ "Çalışıyor" if is_running else "Durdurulmuş" }}</span>
+                                </h5>
+                            </div>
+                            <div class="col-md-3">
+                                <strong>Mod: </strong><span id="current-mode">{{ current_mode.title() }}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <strong>Son Tarama: </strong><span id="last-scan">{{ stats.last_scan or "Henüz yok" }}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="btn-group">
+                                    <button class="btn btn-success btn-sm" onclick="startBot()" id="start-btn">
+                                        <i class="fas fa-play"></i> Başlat
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="stopBot()" id="stop-btn">
+                                        <i class="fas fa-stop"></i> Durdur
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sol Panel - Kontroller -->
+            <div class="col-md-4">
+                <!-- Mode Selector -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Trading Modu</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="mode-form">
+                            <div class="mb-3">
+                                <select class="form-select" name="mode" id="mode-select">
+                                    {% for mode in modes %}
+                                    <option value="{{ mode }}" {{ "selected" if mode == current_mode else "" }}>
+                                        {{ mode.title() }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-save me-2"></i>Modu Değiştir
+                            </button>
+                        </form>
+                        
+                        <!-- Mode açıklamaları -->
+                        <div class="mt-3">
+                            <div class="mode-info" data-mode="aggressive">
+                                <small class="text-muted">
+                                    <strong>Aggressive:</strong> Düşük eşik, fazla sinyal, yüksek risk
+                                </small>
+                            </div>
+                            <div class="mode-info" data-mode="balanced">
+                                <small class="text-muted">
+                                    <strong>Balanced:</strong> Dengeli ayarlar, orta risk
+                                </small>
+                            </div>
+                            <div class="mode-info" data-mode="conservative">
+                                <small class="text-muted">
+                                    <strong>Conservative:</strong> Yüksek eşik, az sinyal, düşük risk
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- İstatistikler -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>İstatistikler</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="stat-item">
+                                    <div class="stat-value" id="total-scans">{{ stats.total_scans }}</div>
+                                    <div class="stat-label">Toplam Tarama</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-item">
+                                    <div class="stat-value" id="signals-sent">{{ stats.signals_sent }}</div>
+                                    <div class="stat-label">Gönderilen Sinyal</div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="uptime">
+                            <strong>Çalışma Süresi: </strong>
+                            <span id="uptime">Hesaplanıyor...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sembol Analiz -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-search me-2"></i>Sembol Analizi</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="symbol-input" placeholder="BTCUSDT">
+                            <button class="btn btn-primary" onclick="analyzeSymbol()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div id="analysis-result" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sağ Panel - Canlı Sinyaller -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-broadcast-tower me-2"></i>
+                            Canlı Sinyaller
+                            <span class="badge bg-success ms-2" id="signal-count">{{ current_signals|length }}</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="signals-container">
+                            {% for signal in current_signals %}
+                            <div class="signal-card mb-3">
+                                <div class="signal-header">
+                                    <span class="signal-symbol">{{ signal.symbol }}</span>
+                                    <span class="signal-side {{ signal.side.lower() }}">{{ signal.side }}</span>
+                                    <span class="signal-regime">{{ signal.regime }}</span>
+                                    <small class="signal-time">{{ signal.timestamp }}</small>
+                                </div>
+                                <div class="signal-levels">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <small class="text-muted">Entry</small>
+                                            <div class="level-value">{{ "%.6f"|format(signal.entry) }}</div>
+                                        </div>
+                                        <div class="col-3">
+                                            <small class="text-muted">SL</small>
+                                            <div class="level-value">{{ "%.6f"|format(signal.sl) }}</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <small class="text-muted">TP1 / TP2 / TP3</small>
+                                            <div class="level-value">
+                                                {{ "%.6f"|format(signal.tp1) }} / 
+                                                {{ "%.6f"|format(signal.tp2) }} / 
+                                                {{ "%.6f"|format(signal.tp3) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="signal-footer">
+                                    <small class="text-muted">Skor: {{ signal.score|int }} | {{ signal.reason }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Sinyal yoksa -->
+                        <div id="no-signals" class="text-center text-muted py-5" {% if current_signals %}style="display: none;"{% endif %}>
+                            <i class="fas fa-signal fa-3x mb-3"></i>
+                            <p>Henüz sinyal yok. Bot çalıştırıldığında sinyaller burada görünecek.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WebSocket ve JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>
