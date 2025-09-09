@@ -4,7 +4,7 @@ Risk yönetimi - Stop Loss, Take Profit, ATR tabanlı hesaplamalar
 """
 
 from typing import Tuple
-from config.settings import ATR_STOP_MULT, TPS_R
+from ..config.settings import ATR_STOP_MULT, TPS_R
 
 
 def compute_sl_tp_atr(side: str, entry: float, atr_value: float) -> Tuple[float, Tuple[float, float, float]]:

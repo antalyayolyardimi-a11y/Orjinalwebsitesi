@@ -5,7 +5,7 @@ Yapay zeka modülü - Online logistic regression, özelliklere dayalı öğrenme
 
 import math
 from typing import Dict, Any, Optional
-from config.settings import AI_ENABLED, AI_LR, AI_L2, AI_INIT_BIAS, SCORING_WEIGHTS
+from ..config.settings import AI_ENABLED, AI_LR, AI_L2, AI_INIT_BIAS, SCORING_WEIGHTS
 
 
 class OnlineLogisticRegression:

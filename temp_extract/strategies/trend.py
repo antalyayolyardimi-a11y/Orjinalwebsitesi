@@ -8,12 +8,12 @@ from typing import Optional, Dict, Any
 import pandas as pd
 
 from .base import BaseStrategy
-from indicators.technical import (
+from ..indicators.technical import (
     atr_wilder, adx, body_strength, bollinger, donchian, ema
 )
-from utils.risk_management import compute_sl_tp_atr
-from utils.helpers import sigmoid
-from config.settings import (
+from ..utils.risk_management import compute_sl_tp_atr
+from ..utils.helpers import sigmoid
+from ..config.settings import (
     ADX_TREND_MIN, ONEH_DISP_BODY_MIN, ONEH_DISP_LOOKBACK,
     DONCHIAN_WIN, BREAK_BUFFER, RETEST_TOL_ATR, ATR_PERIOD
 )

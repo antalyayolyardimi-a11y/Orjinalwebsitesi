@@ -16,23 +16,8 @@ class TradingBotApp {
         this.updateUptime();
         this.setupModeInfo();
         
-        // Başlangıçta buton durumunu ayarla
-        this.initializeButtonStates();
-        
         // Her 10 saniyede bir uptime güncelle
         setInterval(() => this.updateUptime(), 10000);
-    }
-    
-    initializeButtonStates() {
-        // Başlangıçta Start butonunu aktif, Stop butonunu pasif yap
-        const startBtn = document.getElementById('start-btn');
-        const stopBtn = document.getElementById('stop-btn');
-        
-        if (startBtn && stopBtn) {
-            startBtn.disabled = false;
-            stopBtn.disabled = true;
-            console.log('Buton durumları başlatıldı: Start aktif, Stop pasif');
-        }
     }
     
     // ================== WEBSOCKET ==================
@@ -295,13 +280,9 @@ class TradingBotApp {
     
     // ================== BOT CONTROLS ==================
     async startBot() {
-        console.log('startBot() fonksiyonu çağrıldı');
         try {
             const response = await fetch('/bot/start', { method: 'POST' });
-            console.log('API response:', response);
             if (response.ok) {
-                const data = await response.json();
-                console.log('Response data:', data);
                 this.showNotification('Bot başlatıldı', 'success');
             } else {
                 throw new Error('Bot başlatma başarısız');
@@ -428,41 +409,16 @@ class TradingBotApp {
 
 // ================== GLOBAL FUNCTIONS ==================
 function startBot() {
-    console.log('Global startBot() fonksiyonu çağrıldı');
-    if (app) {
-        app.startBot();
-    } else {
-        console.error('App henüz yüklenmemiş!');
-    }
+    app.startBot();
 }
 
 function stopBot() {
-    if (app) {
-        app.stopBot();
-    } else {
-        console.error('App henüz yüklenmemiş!');
-    }
+    app.stopBot();
 }
 
 function analyzeSymbol() {
-    if (app) {
-        app.analyzeSymbol();
-    } else {
-        console.error('App henüz yüklenmemiş!');
-    }
+    app.analyzeSymbol();
 }
 
 // Initialize app
-let app;
-
-// DOM yüklendiğinde uygulamayı başlat
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM yüklendi, uygulama başlatılıyor...');
-    app = new TradingBotApp();
-});
-
-// Sayfa tamamen yüklendiyse hemen başlat
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    console.log('Sayfa zaten yüklenmiş, uygulama başlatılıyor...');
-    app = new TradingBotApp();
-}
+const app = new TradingBotApp();

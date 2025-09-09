@@ -9,10 +9,10 @@ import pandas as pd
 import numpy as np
 
 from .base import BaseStrategy
-from indicators.technical import find_swings, find_fvgs, ema
-from utils.risk_management import compute_sl_tp_atr
-from utils.helpers import sigmoid
-from config.settings import (
+from ..indicators.technical import find_swings, find_fvgs, ema
+from ..utils.risk_management import compute_sl_tp_atr
+from ..utils.helpers import sigmoid
+from ..config.settings import (
     SWING_LEFT, SWING_RIGHT, SWEEP_EPS, BOS_EPS, FVG_LOOKBACK,
     OTE_LOW, OTE_HIGH, SMC_REQUIRE_FVG, ATR_PERIOD
 )

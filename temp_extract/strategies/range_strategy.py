@@ -8,12 +8,12 @@ from typing import Optional, Dict, Any
 import pandas as pd
 
 from .base import BaseStrategy
-from indicators.technical import (
+from ..indicators.technical import (
     rsi, bollinger, body_strength, ema, atr_wilder
 )
-from utils.risk_management import compute_sl_tp_atr
-from utils.helpers import sigmoid
-from config.settings import (
+from ..utils.risk_management import compute_sl_tp_atr
+from ..utils.helpers import sigmoid
+from ..config.settings import (
     BB_PERIOD, BB_K, BWIDTH_RANGE, RSI_LONG_TH, RSI_SHORT_TH,
     VOL_MULT_REQ_GLOBAL, ATR_PERIOD
 )
@@ -103,7 +103,7 @@ class RangeStrategy(BaseStrategy):
     
     def _get_adx_1h(self, df_htf: pd.DataFrame) -> float:
         """1H ADX değeri"""
-        from indicators.technical import adx
+        from ..indicators.technical import adx
         h, l, c = df_htf['h'], df_htf['l'], df_htf['c']
         return float(adx(h, l, c, 14).iloc[-1])
     

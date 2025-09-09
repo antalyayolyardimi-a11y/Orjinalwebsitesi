@@ -11,7 +11,7 @@ import numpy as np
 from typing import Optional, List, Dict, Any
 from kucoin.client import Market
 
-from config.settings import KNOWN_QUOTES, PRINT_PREFIX
+from ..config.settings import KNOWN_QUOTES, PRINT_PREFIX
 
 
 def log(*args) -> None:

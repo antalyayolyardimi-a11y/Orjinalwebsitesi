@@ -9,12 +9,12 @@ import pandas as pd
 import numpy as np
 
 from .base import BaseStrategy
-from indicators.technical import (
+from ..indicators.technical import (
     donchian, ema, atr_wilder, adx, body_strength
 )
-from utils.risk_management import compute_sl_tp_atr
-from utils.helpers import sigmoid
-from config.settings import (
+from ..utils.risk_management import compute_sl_tp_atr
+from ..utils.helpers import sigmoid
+from ..config.settings import (
     EARLY_TRIGGERS_ON, PREBREAK_ATR_X, EARLY_MOMO_BODY_MIN,
     EARLY_REL_VOL, EARLY_ADX_BONUS, DONCHIAN_WIN, BREAK_BUFFER,
     MOMO_CONFIRM_MODE, MOMO_BODY_MIN, MOMO_REL_VOL, MOMO_NET_BODY_TH,

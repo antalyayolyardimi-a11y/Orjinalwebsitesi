@@ -200,29 +200,3 @@ PENALTY_DECAY = 2
 
 # Known quote currencies for symbol normalization
 KNOWN_QUOTES = ["USDT", "USDC", "BTC", "ETH", "TUSD", "EUR", "KCS"]
-
-# ================== TRADING SETTINGS CLASS ==================
-class TradingSettings:
-    """Trading bot ayarları sınıfı"""
-    def __init__(self, mode="balanced"):
-        self.trading_mode = mode
-        self.config = MODE_CONFIGS.get(mode, MODE_CONFIGS["balanced"])
-        
-        # Mode-specific settings
-        for key, value in self.config.items():
-            setattr(self, key, value)
-            
-        # Global settings
-        self.telegram_token = TELEGRAM_TOKEN
-        self.symbols = []  # Dinamik olarak doldurulacak
-        self.timeframe_ltf = TF_LTF
-        self.timeframe_htf = TF_HTF
-        self.lookback_ltf = LOOKBACK_LTF
-        self.lookback_htf = LOOKBACK_HTF
-        self.sleep_seconds = SLEEP_SECONDS
-        self.symbol_concurrency = SYMBOL_CONCURRENCY
-        self.scan_limit = SCAN_LIMIT
-
-def get_settings(mode="balanced"):
-    """Get trading settings for specified mode"""
-    return TradingSettings(mode)

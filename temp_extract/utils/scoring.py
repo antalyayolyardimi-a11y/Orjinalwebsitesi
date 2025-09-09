@@ -7,15 +7,15 @@ import math
 from typing import Dict, Any, Optional
 import pandas as pd
 
-from config.settings import (
+from ..config.settings import (
     SCORING_WEIGHTS, SCORING_BASE, PROB_CALIB_A, PROB_CALIB_B,
     ADX_TREND_MIN, BWIDTH_RANGE, FBB_ATR_MIN, FBB_ATR_MAX,
     PENALTY_DECAY
 )
-from indicators.technical import (
+from ..indicators.technical import (
     adx, bollinger, atr_wilder
 )
-from ai.predictor import ai_predictor
+from ..ai.predictor import ai_predictor
 
 
 class ScoringSystem:

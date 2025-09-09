@@ -52,8 +52,8 @@ class BaseStrategy(ABC):
     
     def get_common_data(self, df_ltf: pd.DataFrame) -> Dict[str, Any]:
         """Ortak veri hesaplamaları"""
-        from indicators.technical import atr_wilder
-        from utils.risk_management import compute_sl_tp_atr
+        from ..indicators.technical import atr_wilder
+        from ..utils.risk_management import compute_sl_tp_atr
         
         o, h, l, c, v = df_ltf['o'], df_ltf['h'], df_ltf['l'], df_ltf['c'], df_ltf['v']
         

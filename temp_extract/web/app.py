@@ -18,7 +18,7 @@ from kucoin.client import Market
 
 from config.settings import get_settings, MODE_CONFIGS
 from utils.helpers import log, get_ohlcv
-# from indicators.technical import get_technical_data  # Bu fonksiyon mevcut değil
+from indicators.technical import get_technical_data
 from web.bot_manager import bot_manager
 
 # FastAPI uygulaması
@@ -38,20 +38,10 @@ client = Market(url="https://api.kucoin.com")
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request):
     """Ana dashboard sayfası"""
-    # Bot istatistiklerini hazırla
-    stats = {
-        "last_scan": "Henüz tarama yapılmadı",
-        "total_signals": 0,
-        "win_rate": 0.0,
-        "running_signals": 0
-    }
-    
     return templates.TemplateResponse("dashboard.html", {
         "request": request,
         "modes": list(MODE_CONFIGS.keys()),
-        "current_mode": settings.trading_mode,
-        "stats": stats,
-        "is_running": getattr(bot_manager, 'is_running', False)
+        "current_mode": settings.trading_mode
     })
 
 @app.get("/signals", response_class=HTMLResponse) 
